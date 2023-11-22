@@ -1,0 +1,6 @@
+<launch>
+	<node pkg="walker_kinematics_solver" type="ik_api_node" name="ik_api_node" output="screen"/>
+	<node name="man2manual" pkg="dt_launch" type="walker2_man2manual.py" output="screen"/>
+	<node name="manual2Robot" pkg="dt_launch" type="walker2_manual2Robot.py" output="screen"/>
+	<node name="Robot2live" pkg="dt_launch" type="walker2_Robot2live.py" output="screen"/>
+</launch>
