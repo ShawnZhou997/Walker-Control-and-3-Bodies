@@ -1,0 +1,1860 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+<!-- |    This document was edited based on WalkerX.                                   | -->
+<!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
+<!-- =================================================================================== -->
+<robot name="WalkerX">
+        
+        <link name="world"/>
+        <joint name="world_joint" type="fixed">
+                <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+                <parent link="world"/>
+                <child link="base"/>
+        </joint>
+
+        <link name="base"/>
+        <joint name="base_joint" type="floating">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="base"/>
+                <child link="body"/>
+                <calibration rising="0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+                <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
+                <safety_controller k_velocity="10" k_position="15" soft_lower_limit="-2.0" soft_upper_limit="0.5" />
+        </joint>
+        
+        <link name="body">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.00359 0.135142 0.000893"/>
+                        <mass value="29.422"/>
+                        <inertia ixx="0.878648895" ixy="-0.048241381" ixz="0.002539696" iyy="1.043435375" iyz="-0.004411808" izz="1.788668576"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/body.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0 0.16 0.013" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.36 0.4 0.24"/>
+                        </geometry>
+                </collision>
+        </link>
+        
+        <!-- IMU  -->
+        <link name="IMU">
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="0.000000001" ixy="0.000000001" ixz="0.000000001" iyy="0.000000001" iyz="0.000000001" izz="0.000000001"/>
+                </inertial>
+        </link>
+        <joint name="IMU_joint" type="fixed">
+                <parent link="body"/>
+                <child link="IMU"/>
+                <origin rpy="0 0 0" xyz="0 0.00847 0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+        </joint>
+
+        <!-- head -->
+        <link name="headpitch">
+                <inertial>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="1.0E-09" ixy="1.0E-09" ixz="1.0E-09" iyy="1.0E-09" iyz="1.0E-09" izz="1.0E-09"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0.013 -0.4035 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="headpitch" type="revolute">
+                <origin xyz="-0.013 0.4035 0" rpy="0 0 0"/>
+                <parent link="body"/>
+                <child link="headpitch"/>
+                <axis xyz="-1 0 0"/>
+                <limit lower="-0.436111" upper="0.523333" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="headroll">
+                <inertial>
+                        <origin xyz="0.000941 0.018432 -0.002438" rpy="0 0 0"/>
+                        <mass value="0.32"/>
+                        <inertia ixx="9.85E-04" ixy="1.90E-05" ixz="-3.00E-06" iyy="2.31E-04" iyz="-1.66E-04" izz="9.40E-04"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 -0.4035 -0.0115" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="headroll" type="revolute">
+                <origin xyz="0.013 0 0.0115" rpy="0 0 0"/>
+                <parent link="headpitch"/>
+                <child link="headroll"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.261667" upper="0.261667" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="headyaw">
+                <inertial>
+                        <origin xyz="0.000294 -0.026233 -0.007116" rpy="0 0 0"/>
+                        <mass value="1.529"/>
+                        <inertia ixx="1.20E-02" ixy="-2.55E-05" ixz="1.61E-05" iyy="1.20E-02" iyz="-7.50E-04" izz="1.13E-02"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0 -0.5232 0" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/headyaw.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0 -0.0432 0" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.22 0.24 0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="headyaw" type="revolute">
+                <origin xyz="0 0.1197 -0.0115" rpy="0 0 0"/>
+                <parent link="headroll"/>
+                <child link="headyaw"/>
+                <axis xyz="0 -1 0"/>
+                <limit lower="-1.221111" upper="1.221111" effort="5.04" velocity="15.7"/>
+        </joint>
+
+        <!-- left arm -->
+        <link name="lshoulderpitch">
+                <inertial>
+                        <origin xyz="0.032286 0.01143 0.001309" rpy="0 0 0"/>
+                        <mass value="0.36"/>
+                        <inertia ixx="8.39E-04" ixy="-1.65E-05" ixz="-1.47E-05" iyy="8.44E-04" iyz="3.06E-06" izz="5.03E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.16776 -0.25982 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lshoulderpitch.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.05824 0.00518 0.01" rpy="1.5708 0 -1.36"/>
+                        <geometry>
+                                <cylinder radius="0.08" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j1" type="revolute">
+                <origin xyz="0.16776 0.25982 -0.01" rpy="0 0 0"/>
+                <parent link="body"/>
+                <child link="lshoulderpitch"/>
+                <axis xyz="-0.96593 -0.25882 0"/>
+                <limit lower="-1.8325" upper="3.2288" effort="30" velocity="3.14"/>
+        </joint>
+        <link name="lshoulderroll">
+                <inertial>
+                        <origin xyz="0.002445 -0.007352 -0.042715" rpy="0 0 0"/>
+                        <mass value="0.898"/>
+                        <inertia ixx="9.19E-04" ixy="7.02E-05" ixz="1.00E-05" iyy="6.97E-04" iyz="3.25E-05" izz="8.83E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.236824 -0.278326 -0.038" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lshoulderroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.000176 -0.00333 -0.038" rpy="1.5708 0 0.2"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j2" type="revolute">
+                <origin xyz="0.069064 0.018506 0.048" rpy="0 0 0"/>
+                <parent link="lshoulderpitch"/>
+                <child link="lshoulderroll"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-1.5707" upper="0.0250" effort="30" velocity="3.14"/>
+        </joint>
+        <link name="lshoulderyaw">
+                <inertial>
+                        <origin xyz="0.020716 -0.082153 -0.000227" rpy="0 0 0"/>
+                        <mass value="0.889"/>
+                        <inertia ixx="2.36E-03" ixy="1.64E-04" ixz="9.20E-07" iyy="1.02E-03" iyz="9.09E-06" izz="2.23E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.246561518 -0.242630331 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lshoulderyaw.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.020438 -0.11763 0.01" rpy="1.5708 0 0.2"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j3" type="revolute">
+                <origin xyz="0.00973751835036785 -0.0356956688415066 -0.0479999999999998" rpy="0 0 0"/>
+                <parent link="lshoulderroll"/>
+                <child link="lshoulderyaw"/>
+                <axis xyz="0.263176154739162 -0.964747796875799 0"/>
+                <limit lower="-2.5307" upper="2.5307" effort="15" velocity="3.14"/>
+        </joint>
+        <link name="lelbowroll">
+                <inertial>
+                        <origin xyz="0.007907 -0.006402 -0.031985" rpy="0 0 0"/>
+                        <mass value="0.704"/>
+                        <inertia ixx="6.44E-04" ixy="1.37E-04" ixz="3.30E-05" iyy="6.88E-04" iyz="2.82E-05" izz="8.07E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.269481518 -0.064380331 -0.0285" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lelbowroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.024518 -0.00808 -0.0285" rpy="1.5708 0 0.25"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j4" type="revolute">
+                <origin xyz="0.02292 -0.17825 0.0385" rpy="0 0 0"/>
+                <parent link="lshoulderyaw"/>
+                <child link="lelbowroll"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-2.1816" upper="0.0000" effort="15" velocity="3.14"/>
+        </joint>
+        <link name="lelbowyaw">
+                <inertial>
+                        <origin xyz="0.017657 -0.072773 -0.000314" rpy="0 0 0"/>
+                        <mass value="0.925"/>
+                        <inertia ixx="1.73E-03" ixy="1.75E-04" ixz="-1.62E-06" iyy="7.31E-04" iyz="-9.27E-06" izz="1.88E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.304986518 -0.028458331 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lelbowyaw.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.026013 -0.10466 0.01" rpy="1.5708 0 0.25"/>
+                        <geometry>
+                                <cylinder radius="0.05" length="0.16"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j5" type="revolute">
+                <origin xyz="0.035505 -0.035922 -0.0385" rpy="0 0 0"/>
+                <parent link="lelbowroll"/>
+                <child link="lelbowyaw"/>
+                <axis xyz="0.26318 -0.96475 0"/>
+                <limit lower="-2.2689" upper="2.2689" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="lwristpitch">
+                <inertial>
+                        <origin xyz="0.030387 0.00829 0.000303" rpy="0 0 0"/>
+                        <mass value="0.293"/>
+                        <inertia ixx="1.56E-04" ixy="2.05E-06" ixz="-5.45E-07" iyy="1.47E-04" iyz="1.05E-06" izz="1.22E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.316617518 0.135771669 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lwristpitch.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.037382 -0.00223 0.0058" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j6" type="revolute">
+                <origin xyz="0.011631 -0.16423 0" rpy="0 0 0"/>
+                <parent link="lelbowyaw"/>
+                <child link="lwristpitch"/>
+                <axis xyz="-0.96475 -0.26318 0"/>
+                <limit lower="-0.7853" upper="0.7853" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="lwristroll">
+                <inertial>
+                        <origin xyz="0.005545 -0.020037 0.039518" rpy="0 0 0"/>
+                        <mass value="0.144"/>
+                        <inertia ixx="2.38E-04" ixy="1.47E-05" ixz="-5.96E-07" iyy="1.88E-04" iyz="-2.21E-06" izz="9.11E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.347489448 0.127350032 0.0415" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lwristroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.001511 -0.00365 0.0305" rpy="0 0 0.269"/>
+                        <geometry>
+                                <box size="0.05 0.1 0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_limb_j7" type="revolute">
+                <origin xyz="0.0308719294999887 0.00842163695164322 -0.0315000000000009" rpy="0 0 0"/>
+                <parent link="lwristpitch"/>
+                <child link="lwristroll"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-1.2217" upper="1.2217" effort="5.04" velocity="15.7"/>
+        </joint>
+
+        <!-- 6axis -->
+        <link name="lhand6axis">
+                <inertial>
+                        <origin xyz="0.000638 0.000001 0.000071" rpy="0 0 0"/>
+                        <mass value="0.088"/>
+                        <inertia ixx="9.26E-06" ixy="1.00E-09" ixz="-1.13E-07" iyy="1.04E-05" iyz="0.0" izz="1.44E-05"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="lhand6axis" type="fixed">
+                <origin xyz="0.016112 -0.06148 0.030999" rpy="0 0 0.26"/>
+                <parent link="lwristroll"/>
+                <child link="lhand6axis"/>
+        </joint>
+
+        <!-- left hand -->
+        <link name="lhandbase">
+                <inertial>
+                        <origin xyz="0.01442 -0.050978 -0.000288" rpy="0 0 0"/>
+                        <mass value="0.593"/>
+                        <inertia ixx="1.30E-03" ixy="-2.47E-04" ixz="1.57E-05" iyy="5.23E-04" iyz="-1.29E-05" izz="1.06E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.363601448 0.188830032 0.010501" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lhandbase.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.014399 -0.05117 0.001501" rpy="0 0 0.261799"/>
+                        <geometry>
+                                <box size="0.05 0.14 0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="lhandbase" type="fixed">
+                <origin xyz="0 0 0" rpy="0 0 -0.26"/>
+                <parent link="lhand6axis"/>
+                <child link="lhandbase"/>
+        </joint>
+        <link name="lfirstfinger1">
+                <inertial>
+                        <origin xyz="-0.0276 -0.007191 -0.00012297" rpy="0 0 0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="1.0E-09" ixy="1.0E-09" ixz="1.0E-09" iyy="1.0E-09" iyz="1.0E-09" izz="1.0E-09"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_thumb_j1" type="revolute">
+                <origin xyz="0.002988552 -0.044119968 0.02263" rpy="0 0 0"/>
+                <parent link="lhandbase"/>
+                <child link="lfirstfinger1"/>
+                <axis xyz="0.072663 -0.99736 0"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lfirstfinger2">
+                <inertial>
+                        <origin xyz="-0.0276 -0.007191 -0.00012297" rpy="0 0 0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="1.0E-09" ixy="1.0E-09" ixz="1.0E-09" iyy="1.0E-09" iyz="1.0E-09" izz="1.0E-09"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_thumb_j2" type="revolute">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="lfirstfinger1"/>
+                <child link="lfirstfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lfirstfinger3">
+                <inertial>
+                        <origin xyz="-0.0276 -0.007191 -0.00012297" rpy="0 0 0"/>
+                        <mass value="0.033"/>
+                        <inertia ixx="2.55E-06" ixy="1.98E-06" ixz="1.06E-06" iyy="1.24E-05" iyz="3.55E-07" izz="1.27E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.36659 0.23295 -0.012129" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfirstfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.03059 -0.00905 -0.00013" rpy="1.5708 0 -1.2"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.046"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_thumb_j3" type="revolute">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="lfirstfinger2"/>
+                <child link="lfirstfinger3"/>
+                <axis xyz="0.99736 0.072663 0"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_thumb_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="lfirstfinger4">
+                <inertial>
+                        <origin xyz="-0.013347 -0.005466 0.0092903" rpy="0 0 0"/>
+                        <mass value="0.013"/>
+                        <inertia ixx="9.85E-07" ixy="4.99E-07" ixz="-1.00E-09" iyy="2.29E-06" iyz="0.0" izz="2.48E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.318567 0.246872 -0.0028289" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfirstfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.01457 -0.00513 0.009171" rpy="1.5708 0 -1.2"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.033"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_thumb_j4" type="revolute">
+                <origin xyz="-0.048023 -0.013922 -0.0093001" rpy="0 0 0"/>
+                <parent link="lfirstfinger3"/>
+                <child link="lfirstfinger4"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_thumb_j2" multiplier="1.0" offset="0.0"/>
+
+        </joint>
+        <link name="lsecondfinger1">
+                <inertial>
+                        <origin xyz="-0.001581 -0.006251 0.009022" rpy="0 0 0"/>
+                        <mass value="0.026"/>
+                        <inertia ixx="1.25E-05" ixy="1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.38859 0.31361 -0.016929" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lsecondfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00459 -0.02139 0.008983" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_index_j1" type="revolute">
+                <origin xyz="0.024988552 -0.124779968 0.02743" rpy="0 0 0"/>
+                <parent link="lhandbase"/>
+                <child link="lsecondfinger1"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lsecondfinger2">
+                <inertial>
+                        <origin xyz="-0.0013523 -0.0098926 -0.0084701" rpy="0 0 0"/>
+                        <mass value="0.008"/>
+                        <inertia ixx="9.79E-07" ixy="1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.382048 0.352565 -0.034429" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lsecondfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00315 -0.01094 -0.00853" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_index_j2" type="revolute">
+                <origin xyz="-0.0065419 -0.038955 0.0175" rpy="0 0 0"/>
+                <parent link="lsecondfinger1"/>
+                <child link="lsecondfinger2"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_index_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="lthirdfinger1">
+                <inertial>
+                        <origin xyz="-0.000916 -0.003317 0.009027" rpy="0 0 0"/>
+                        <mass value="0.026"/>
+                        <inertia ixx="1.25E-05" ixy="1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.39099 0.32229 0.0097712" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lthirdfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00399 -0.02071 0.008983" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_middle_j1" type="revolute">
+                <origin xyz="0.027388552 -0.133459968 0.0007298" rpy="0 0 0"/>
+                <parent link="lhandbase"/>
+                <child link="lthirdfinger1"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lthirdfinger2">
+                <inertial>
+                        <origin xyz="5.3787E-05 0.00095707 -0.0084801" rpy="0 0 0"/>
+                        <mass value="0.008"/>
+                        <inertia ixx="9.79E-07" ixy="1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.384448 0.361245 -0.0077288" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lthirdfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00236 -0.01105 -0.00853" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_middle_j2" type="revolute">
+                <origin xyz="-0.0065419 -0.038955 0.0175" rpy="0 0 0"/>
+                <parent link="lthirdfinger1"/>
+                <child link="lthirdfinger2"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_middle_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="lfourthfinger1">
+                <inertial>
+                        <origin xyz="-0.0009 -0.003887 0.009026" rpy="0 0 0"/>
+                        <mass value="0.026"/>
+                        <inertia ixx="1.25E-05" ixy="1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.39003 0.31882 0.032771" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfourthfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00403 -0.02018 0.008983" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_ring_j1" type="revolute">
+                <origin xyz="0.026428552 -0.129989968 -0.02227" rpy="0 0 0"/>
+                <parent link="lhandbase"/>
+                <child link="lfourthfinger1"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lfourthfinger2">
+                <inertial>
+                        <origin xyz="5.2231E-05 0.00095675 -0.0084801" rpy="0 0 0"/>
+                        <mass value="0.008"/>
+                        <inertia ixx="9.79E-07" ixy="1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.383488 0.357775 0.015271" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfourthfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00234 -0.01105 -0.00853" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_ring_j2" type="revolute">
+                <origin xyz="-0.0065419 -0.038955 0.0175" rpy="0 0 0"/>
+                <parent link="lfourthfinger1"/>
+                <child link="lfourthfinger2"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_ring_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="lfifthfinger1">
+                <inertial>
+                        <origin xyz="-0.0009 -0.003887 0.009026" rpy="0 0 0"/>
+                        <mass value="0.026"/>
+                        <inertia ixx="1.25E-05" ixy="1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.38623 0.3126 0.055771" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfifthfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00423 -0.0204 0.008983" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_pinky_j1" type="revolute">
+                <origin xyz="0.022628552 -0.123769968 -0.04527" rpy="0 0 0"/>
+                <parent link="lhandbase"/>
+                <child link="lfifthfinger1"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="lfifthfinger2">
+                <inertial>
+                        <origin xyz="5.2232E-05 0.00095675 -0.0084801" rpy="0 0 0"/>
+                        <mass value="0.008"/>
+                        <inertia ixx="9.79E-07" ixy="1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="-0.379688 0.351555 0.038271" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfifthfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00231 -0.01104 -0.00853" rpy="1.5708 0 -0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.033"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="left_pinky_j2" type="revolute">
+                <origin xyz="-0.0065419 -0.038955 0.0175" rpy="0 0 0"/>
+                <parent link="lfifthfinger1"/>
+                <child link="lfifthfinger2"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="left_pinky_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+
+        <!-- right arm -->
+        <link name="rshoulderpitch">
+                <inertial>
+                        <origin xyz="-0.031316 0.010905 0.002142" rpy="0 0 0"/>
+                        <mass value="0.36"/>
+                        <inertia ixx="8.39E-04" ixy="-1.65E-05" ixz="-1.47E-05" iyy="8.44E-04" iyz="3.06E-06" izz="5.03E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.16805 -0.2599 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rshoulderpitch.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.05761 0.004668 0.01" rpy="1.5708 0 1.36"/>
+                        <geometry>
+                                <cylinder radius="0.08" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j1" type="revolute">
+                <origin xyz="-0.16805 0.2599 -0.01" rpy="0 0 0"/>
+                <parent link="body"/>
+                <child link="rshoulderpitch"/>
+                <axis xyz="0.96593 -0.25882 0"/>
+                <limit lower="-3.2288" upper="1.8325" effort="30" velocity="3.14"/>
+        </joint>
+        <link name="rshoulderroll">
+                <inertial>
+                        <origin xyz="-0.002285 -0.007588 -0.042818" rpy="0 0 0"/>
+                        <mass value="0.898"/>
+                        <inertia ixx="9.19E-04" ixy="7.02E-05" ixz="1.00E-05" iyy="6.97E-04" iyz="3.25E-05" izz="8.83E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.236824 -0.27828 -0.038" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rshoulderroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.000203 -0.00368 -0.038" rpy="1.5708 0 -0.2"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j2" type="revolute">
+                <origin xyz="-0.068774 0.018428 0.048" rpy="0 0 0"/>
+                <parent link="rshoulderpitch"/>
+                <child link="rshoulderroll"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-1.5707" upper="0.0250" effort="30" velocity="3.14"/>
+        </joint>
+        <link name="rshoulderyaw">
+                <inertial>
+                        <origin xyz="-0.02082 -0.084928 -0.000058" rpy="0 0 0"/>
+                        <mass value="0.889"/>
+                        <inertia ixx="2.36E-03" ixy="1.64E-04" ixz="9.20E-07" iyy="1.02E-03" iyz="9.09E-06" izz="2.23E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.2457015 -0.245197 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rshoulderyaw.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.02093 -0.12056 0.01" rpy="1.5708 0 -0.2"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j3" type="revolute">
+                <origin xyz="-0.0088775 -0.033131 -0.048" rpy="0 0 0"/>
+                <parent link="rshoulderroll"/>
+                <child link="rshoulderyaw"/>
+                <axis xyz="-0.25882 -0.96593 0"/>
+                <limit lower="-2.5307" upper="2.5307" effort="15" velocity="3.14"/>
+        </joint>
+        <link name="relbowroll">
+                <inertial>
+                        <origin xyz="-0.007735 -0.006386 -0.023962" rpy="0 0 0"/>
+                        <mass value="0.704"/>
+                        <inertia ixx="6.44E-04" ixy="1.37E-04" ixz="3.30E-05" iyy="6.88E-04" iyz="2.82E-05" izz="8.07E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.2685155 -0.064237 -0.0205" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/relbowroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.02511 -0.00793 -0.0205" rpy="1.5708 0 -0.25"/>
+                        <geometry>
+                                <cylinder radius="0.06" length="0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j4" type="revolute">
+                <origin xyz="-0.022814 -0.18096 0.0305" rpy="0 0 0"/>
+                <parent link="rshoulderyaw"/>
+                <child link="relbowroll"/>
+                <axis xyz="0 0 -1"/>
+                <limit lower="-2.1816" upper="0.0000" effort="15" velocity="3.14"/>
+        </joint>
+        <link name="relbowyaw">
+                <inertial>
+                        <origin xyz="-0.017415 -0.073197 0.00031" rpy="0 0 0"/>
+                        <mass value="0.925"/>
+                        <inertia ixx="1.73E-03" ixy="1.75E-04" ixz="-1.62E-06" iyy="7.31E-04" iyz="-9.27E-06" izz="1.88E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3038585 -0.028155 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/relbowyaw.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.02707 -0.10432 0.01" rpy="1.5708 0 -0.25"/>
+                        <geometry>
+                                <cylinder radius="0.05" length="0.16"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j5" type="revolute">
+                <origin xyz="-0.035343 -0.036082 -0.0305" rpy="0 0 0"/>
+                <parent link="relbowroll"/>
+                <child link="relbowyaw"/>
+                <axis xyz="-0.25882 -0.96593 0"/>
+                <limit lower="-2.2689" upper="2.2689" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="rwristpitch">
+                <inertial>
+                        <origin xyz="0.028499 -0.00764 -0.000304" rpy="0 0 0"/>
+                        <mass value="0.293"/>
+                        <inertia ixx="1.56E-04" ixy="2.05E-06" ixz="-5.45E-07" iyy="1.47E-04" iyz="1.05E-06" izz="1.22E-04"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3736695 0.120335 0.01" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rwristpitch.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.020163 -0.01738 0.0058" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j6" type="revolute">
+                <origin xyz="-0.069811 -0.14849 0" rpy="0 0 0"/>
+                <parent link="relbowyaw"/>
+                <child link="rwristpitch"/>
+                <axis xyz="0.96593 -0.25882 0"/>
+                <limit lower="-0.7853" upper="0.7853" effort="5.04" velocity="15.7"/>
+        </joint>
+        <link name="rwristroll">
+                <inertial>
+                        <origin xyz="-0.005454 -0.020062 -0.039518" rpy="0 0 0"/>
+                        <mass value="0.144"/>
+                        <inertia ixx="2.38E-04" ixy="1.47E-05" ixz="-5.96E-07" iyy="1.88E-04" iyz="-2.21E-06" izz="9.11E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3456575 0.1278408 -0.0215" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rwristroll.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.00334 -0.00316 -0.0325" rpy="0 0 -0.269"/>
+                        <geometry>
+                                <box size="0.05 0.1 0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_limb_j7" type="revolute">
+                <origin xyz="0.028012 -0.0075058 0.0315" rpy="0 0 0"/>
+                <parent link="rwristpitch"/>
+                <child link="rwristroll"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-1.2217" upper="1.2217" effort="5.04" velocity="15.7"/>
+        </joint>
+
+        <!-- 6axis -->
+        <link name="rhand6axis">
+                <inertial>
+                        <origin xyz="-0.000638 0.000001 0.000071" rpy="0 0 0"/>
+                        <mass value="0.088"/>
+                        <inertia ixx="9.26E-06" ixy="-1.00E-09" ixz="-1.13E-07" iyy="1.04E-05" iyz="0.0" izz="1.44E-05"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="rhand6axis" type="fixed">
+                <origin xyz="-0.017506 -0.061097 -0.031999" rpy="0 0 -0.26"/>
+                <parent link="rwristroll"/>
+                <child link="rhand6axis"/>
+        </joint>
+
+        <!-- right hand -->
+        <link name="rhandbase">
+                <inertial>
+                        <origin xyz="-0.014677 -0.050888 -0.000288" rpy="0 0 0"/>
+                        <mass value="0.593"/>
+                        <inertia ixx="1.30E-03" ixy="2.47E-04" ixz="-1.57E-05" iyy="5.23E-04" iyz="-1.29E-05" izz="1.06E-03"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3631635 0.1889378 0.010499" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rhandbase.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.01484 -0.05106 0.001499" rpy="0 0 -0.261799"/>
+                        <geometry>
+                                <box size="0.05 0.14 0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="rhandbase" type="fixed">
+                <origin xyz="0 0 0" rpy="0 0 0.26"/>
+                <parent link="rhand6axis"/>
+                <child link="rhandbase"/>
+        </joint>
+        <link name="rfirstfinger1">
+                <inertial>
+                        <origin xyz="0.016949 -0.005689 -0.0016081" rpy="0 0 0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="1.0E-09" ixy="1.0E-09" ixz="1.0E-09" iyy="1.0E-09" iyz="1.0E-09" izz="1.0E-09"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_thumb_j1" type="revolute">
+                <origin xyz="-0.0030465 -0.0451022 0.022629" rpy="0 0 0"/>
+                <parent link="rhandbase"/>
+                <child link="rfirstfinger1"/>
+                <axis xyz="-0.068161 -0.99767 0"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rfirstfinger2">
+                <inertial>
+                        <origin xyz="0.016949 -0.005689 -0.0016081" rpy="0 0 0"/>
+                        <mass value="0.001"/>
+                        <inertia ixx="1.0E-09" ixy="1.0E-09" ixz="1.0E-09" iyy="1.0E-09" iyz="1.0E-09" izz="1.0E-09"/>
+                </inertial>
+                <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.001"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_thumb_j2" type="revolute">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="rfirstfinger1"/>
+                <child link="rfirstfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rfirstfinger3">
+                <inertial>
+                        <origin xyz="0.016949 -0.005689 -0.0016081" rpy="0 0 0"/>
+                        <mass value="0.033"/>
+                        <inertia ixx="2.55E-06" ixy="-1.98E-06" ixz="1.06E-06" iyy="1.24E-05" iyz="-3.55E-07" izz="1.27E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.36621 0.23404 -0.01213" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfirstfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.03021 -0.00796 -0.00013" rpy="1.5708 0 1.2"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.046"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_thumb_j3" type="revolute">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="rfirstfinger2"/>
+                <child link="rfirstfinger3"/>
+                <axis xyz="0.99767 -0.068161 0"/>
+                <limit lower="-0.5" upper="0.5" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_thumb_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="rfirstfinger4">
+                <inertial>
+                        <origin xyz="0.012578 -0.0046607 -0.0095932" rpy="0 0 0"/>
+                        <mass value="0.012856"/>
+                        <inertia ixx="9.85E-07" ixy="-4.99E-07" ixz="-1.00E-09" iyy="2.29E-06" iyz="0.0" izz="2.48E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.318125 0.247745 -0.02173" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfirstfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.014125 -0.00426 -0.00973" rpy="1.5708 0 1.2"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.033"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_thumb_j4" type="revolute">
+                <origin xyz="0.048085 -0.013705 0.0096" rpy="0 0 0"/>
+                <parent link="rfirstfinger3"/>
+                <child link="rfirstfinger4"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_thumb_j2" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="rsecondfinger1">
+                <inertial>
+                        <origin xyz="0.0016093 -0.0062649 0.0089807" rpy="0 0 0"/>
+                        <mass value="0.02621"/>
+                        <inertia ixx="1.25E-05" ixy="-1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="-1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.38785 0.3148 -0.01693" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rsecondfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.00385 -0.0202 0.008982" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_index_j1" type="revolute">
+                <origin xyz="-0.0246865 -0.1258622 0.027429" rpy="0 0 0"/>
+                <parent link="rhandbase"/>
+                <child link="rsecondfinger1"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rsecondfinger2">
+                <inertial>
+                        <origin xyz="0.0013967 -0.0098864 -0.0085299" rpy="0 0 0"/>
+                        <mass value="0.0077518"/>
+                        <inertia ixx="9.79E-07" ixy="-1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="-2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3811324 0.353725 -0.03443" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rsecondfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.002232 -0.00977 -0.00853" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_index_j2" type="revolute">
+                <origin xyz="0.0067176 -0.038925 0.0175" rpy="0 0 0"/>
+                <parent link="rsecondfinger1"/>
+                <child link="rsecondfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_index_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="rthirdfinger1">
+                <inertial>
+                        <origin xyz="0.0016093 -0.0062648 0.0089807" rpy="0 0 0"/>
+                        <mass value="0.02621"/>
+                        <inertia ixx="1.25E-05" ixy="-1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="-1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.39021 0.32349 0.0097698" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rthirdfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.00321 -0.01951 0.008982" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_middle_j1" type="revolute">
+                <origin xyz="-0.0270465 -0.1345522 0.0007292" rpy="0 0 0"/>
+                <parent link="rhandbase"/>
+                <child link="rthirdfinger1"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rthirdfinger2">
+                <inertial>
+                        <origin xyz="0.00139671105362882 -0.00988639056498997 -0.00852984415019046" rpy="0 0 0"/>
+                        <mass value="0.00775190710725793"/>
+                        <inertia ixx="9.79E-07" ixy="-1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="-2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3834924 0.362415 -0.0077302" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rthirdfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.001399 -0.00988 -0.00853" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_middle_j2" type="revolute">
+                <origin xyz="0.0067176 -0.038925 0.0175" rpy="0 0 0"/>
+                <parent link="rthirdfinger1"/>
+                <child link="rthirdfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_middle_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="rfourthfinger1">
+                <inertial>
+                        <origin xyz="0.0016091 -0.0062651 0.0089807" rpy="0 0 0"/>
+                        <mass value="0.02621"/>
+                        <inertia ixx="1.25E-05" ixy="-1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="-1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.38926 0.32001 0.03277" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfourthfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.00326 -0.01899 0.008982" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_ring_j1" type="revolute">
+                <origin xyz="-0.0260965 -0.1310722 -0.022271" rpy="0 0 0"/>
+                <parent link="rhandbase"/>
+                <child link="rfourthfinger1"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rfourthfinger2">
+                <inertial>
+                        <origin xyz="0.0014007 -0.0098858 -0.0085299" rpy="0 0 0"/>
+                        <mass value="0.0077518"/>
+                        <inertia ixx="9.79E-07" ixy="-1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="-2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3825424 0.358935 0.01527" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfourthfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.001397 -0.00989 -0.00853" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.034"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_ring_j2" type="revolute">
+                <origin xyz="0.0067176 -0.038925 0.0175" rpy="0 0 0"/>
+                <parent link="rfourthfinger1"/>
+                <child link="rfourthfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_ring_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+        <link name="rfifthfinger1">
+                <inertial>
+                        <origin xyz="0.001609 -0.006244 0.008981" rpy="0 0 0"/>
+                        <mass value="0.026"/>
+                        <inertia ixx="1.25E-05" ixy="-1.71E-06" ixz="3.00E-09" iyy="1.34E-06" iyz="-1.20E-08" izz="1.28E-05"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3855 0.31378 0.05577" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfifthfinger1.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0035 -0.01922 0.008982" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.0505"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_pinky_j1" type="revolute">
+                <origin xyz="-0.0223365 -0.1248422 -0.045271" rpy="0 0 0"/>
+                <parent link="rhandbase"/>
+                <child link="rfifthfinger1"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+        </joint>
+        <link name="rfifthfinger2">
+                <inertial>
+                        <origin xyz="0.0014006 -0.0098858 -0.0085299" rpy="0 0 0"/>
+                        <mass value="0.0077518"/>
+                        <inertia ixx="9.79E-07" ixy="-1.17E-07" ixz="1.00E-09" iyy="3.68E-07" iyz="-2.00E-09" izz="1.00E-06"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0.3787824 0.352705 0.03827" rpy="0 0 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfifthfinger2.obj"/>
+                        </geometry>
+                        <material name="">
+                                <color rgba="0.75294 0.75294 0.75294 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.001404 -0.00989 -0.00853" rpy="1.5708 0 0.18"/>
+                        <geometry>
+                                <cylinder radius="0.011" length="0.033"/>
+                        </geometry>
+                </collision>
+        </link>
+        <joint name="right_pinky_j2" type="revolute">
+                <origin xyz="0.0067176 -0.038925 0.0175" rpy="0 0 0"/>
+                <parent link="rfifthfinger1"/>
+                <child link="rfifthfinger2"/>
+                <axis xyz="0 0 1"/>
+                <limit lower="-0.000001" upper="1.66" effort="0.5" velocity="3.14"/>
+                <mimic joint="right_pinky_j1" multiplier="1.0" offset="0.0"/>
+        </joint>
+
+
+        <!--left leg -->
+        <link name="lhipyaw">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="2.6E-05 -0.035752 0.010422"/>
+                        <mass value="0.935"/>
+                        <inertia ixx="0.006759323" ixy="-0.000002017" ixz="0.000001398" iyy="0.005205462" iyz="-0.000220563" izz="0.002349099"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.1175 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lhipyaw.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0025 0.0275 0" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.09 0.14 0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lhiproll">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.00021 4.2E-05 0.009139"/>
+                        <mass value="2.093"/>
+                        <inertia ixx="0.004462325" ixy="0.00000471" ixz="-0.000004969" iyy="0.004266074" iyz="0.000008958" izz="0.003361619"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.1175 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lhiproll.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0025 -0.0025 0" rpy="1.5708 0 1.5708"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lhippitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-0.01301 0.133985 -0.013876"/>
+                        <mass value="4.104"/>
+                        <inertia ixx="0.033015296" ixy="-0.001091005" ixz="0.000263217" iyy="0.015543926" iyz="0.000955859" izz="0.040267738"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.1175 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lhippitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0025 -0.1325 0" rpy="1.5708 0 0"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.48"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lkneepitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-0.010998 0.088408 -0.00436"/>
+                        <mass value="5.905"/>
+                        <inertia ixx="0.055429932" ixy="0.000519687" ixz="0.000024586" iyy="0.013676155" iyz="0.000929816" izz="0.059300969"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.3875 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lkneepitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0075 -0.1425 0" rpy="1.5708 0 0"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.42"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lanklepitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.000666 1.9E-05 0.011721"/>
+                        <mass value="1.788"/>
+                        <inertia ixx="0.003614581" ixy="-0.000002151" ixz="-0.000011805" iyy="0.003342039" iyz="-0.000004576" izz="0.002392532"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.6475 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lanklepitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0025 0.0175 0" rpy="1.5708 0 1.5708"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lankleroll">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-3E-06 0.037299 0.01022"/>
+                        <mass value="0.725"/>
+                        <inertia ixx="0.004516106" ixy="-0.000000265" ixz="0.000000047" iyy="0.003526643" iyz="0.000260083" izz="0.001547449"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.6475 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lankleroll.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0005 -0.0125 0" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.08 0.12 0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="l6axis">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                        <mass value="0.26"/>
+                        <inertia ixx="0.0000718" ixy="0.000000004" ixz="0.000000444" iyy="0.000136" iyz="-0.000000001" izz="0.0000720"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                        <geometry>
+                                <sphere radius="0.01"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.01"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="lfoot">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-0.000394 0.006703 -0.007596"/>
+                        <mass value="1.25"/>
+                        <inertia ixx="0.003887045" ixy="-0.000004054" ixz="-0.000003663" iyy="0.005419827" iyz="0.000023379" izz="0.001780172"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="-0.1025 0.75 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/lfoot.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0005 -0.018 0.014" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.152 0.008 0.23"/>
+                        </geometry>
+                </collision>
+        </link>
+
+        <!-- right leg -->
+        <link name="rhipyaw">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-2.6E-05 -0.035752 0.010422"/>
+                        <mass value="0.935"/>
+                        <inertia ixx="0.006759323" ixy="-0.000002017" ixz="0.000001398" iyy="0.005205462" iyz="-0.000220563" izz="0.002349099"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.1175 0.0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rhipyaw.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0025 0.0275 0" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.09 0.14 0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="rhiproll">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-0.00021 4.2E-05 0.009139"/>
+                        <mass value="2.093"/>
+                        <inertia ixx="0.004462325" ixy="-0.00000471" ixz="0.000004969" iyy="0.004266074" iyz="0.000008958" izz="0.003361619"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.1175 0.0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rhiproll.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0025 -0.0025 0" rpy="1.5708 0 1.5708"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.12"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="rhippitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.01301 0.133985 -0.013876"/>
+                        <mass value="4.104"/>
+                        <inertia ixx="0.033015296" ixy="0.001091005" ixz="-0.000263217" iyy="0.015543926" iyz="0.000955859" izz="0.040267738"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.1175 0.0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rhippitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0025 -0.1325 0" rpy="1.5708 0 0"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.48"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="rkneepitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.010998 0.088408 -0.00436"/>
+                        <mass value="5.905"/>
+                        <inertia ixx="0.055429932" ixy="-0.000519687" ixz="-0.000024586" iyy="0.013676155" iyz="0.000929816" izz="0.059300969"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.3875 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rkneepitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="-0.0075 -0.1425 0" rpy="1.5708 0 0"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.42"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="ranklepitch">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="-0.000666 1.9E-05 0.011721"/>
+                        <mass value="1.788"/>
+                        <inertia ixx="0.003614581" ixy="0.000002151" ixz="0.000011805" iyy="0.003342039" iyz="-0.000004576" izz="0.002392532"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.6475 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/ranklepitch.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0025 0.0175 0" rpy="1.5708 0 1.5708"/>
+                        <geometry>
+                                <cylinder radius="0.09" length="0.1"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="rankleroll">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="3E-06 0.037299 0.01022"/>
+                        <mass value="0.725"/>
+                        <inertia ixx="0.004516106" ixy="0.000000265" ixz="-0.000000047" iyy="0.003526643" iyz="0.000260083" izz="0.001547449"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.6475 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rankleroll.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0005 -0.0125 0" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.08 0.12 0.2"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="r6axis">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                        <mass value="0.26"/>
+                        <inertia ixx="0.0000718" ixy="0.000000004" ixz="0.000000444" iyy="0.000136" iyz="-0.000000001" izz="0.0000720"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                        <geometry>
+                                <sphere radius="0.01"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+                        <geometry>
+                                <sphere radius="0.01"/>
+                        </geometry>
+                </collision>
+        </link>
+        <link name="rfoot">
+                <contact>
+                        <lateral_friction value="1"/>
+                </contact>
+                <inertial>
+                        <origin rpy="0 0 0" xyz="0.000394 0.006703 -0.007596"/>
+                        <mass value="1.25"/>
+                        <inertia ixx="0.003887045" ixy="0.000004054" ixz="0.000003663" iyy="0.005419827" iyz="0.000023379" izz="0.001780172"/>
+                </inertial>
+                <visual>
+                        <origin rpy="0 0 0" xyz="0.1025 0.75 0"/>
+                        <geometry>
+                                <mesh filename="package://walkerx_description/meshes/rfoot.obj" scale="1 1 1"/>
+                        </geometry>
+                        <material name="white">
+                                <color rgba="1 1 1 1"/>
+                        </material>
+                </visual>
+                <collision>
+                        <origin xyz="0.0005 -0.018 0.014" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="0.152 0.008 0.23"/>
+                        </geometry>
+                </collision>
+        </link>
+
+        <!-- joint for left leg -->
+        <joint name="body_to_lhipyaw" type="revolute">
+                <origin rpy="0 0 0" xyz="0.1025 -0.1175 0"/>
+                <axis xyz="0 1 0"/>
+                <parent link="body"/>
+                <child link="lhipyaw"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="60" lower="-1.046666667" upper="0.785" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lhipyaw_to_lhiproll" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="0 0 1"/>
+                <parent link="lhipyaw"/>
+                <child link="lhiproll"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="130" lower="-0.610555556" upper="0.785" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lhiproll_to_lhippitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="lhiproll"/>
+                <child link="lhippitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="135" lower="-1.657222222" upper="0.523333333" velocity="8.059333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lhippitch_to_lkneepitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 -0.27 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="lhippitch"/>
+                <child link="lkneepitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="200" lower="-0.069777778" upper="2.337555556" velocity="8.373333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lkneepitch_to_lanklepitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 -0.26 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="lkneepitch"/>
+                <child link="lanklepitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="135" lower="-1.395555556" upper="0.523333333" velocity="8.059333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lanklepitch_to_lankleroll" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="0 0 1"/>
+                <parent link="lanklepitch"/>
+                <child link="lankleroll"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="70" lower="-0.785" upper="0.610555556" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="lankleroll_to_l6axis" type="fixed">
+                <parent link="lankleroll"/>
+                <child link="l6axis"/>
+                <origin rpy="0 0 0" xyz="0 -0.1025 0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+        </joint>
+        <joint name="l6axis_to_lfoot" type="fixed">
+                <parent link="l6axis"/>
+                <child link="lfoot"/>
+                <origin rpy="0 0 0" xyz="0 0.0 0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+        </joint>
+
+        <!-- joint for right leg -->
+        <joint name="body_to_rhipyaw" type="revolute">
+                <origin rpy="0 0 0" xyz="-0.1025 -0.1175 0.0"/>
+                <axis xyz="0 1 0"/>
+                <parent link="body"/>
+                <child link="rhipyaw"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="60" lower="-1.046666667" upper="0.785" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="rhipyaw_to_rhiproll" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="0 0 1"/>
+                <parent link="rhipyaw"/>
+                <child link="rhiproll"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="130" lower="-0.610555556" upper="0.785" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="rhiproll_to_rhippitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="rhiproll"/>
+                <child link="rhippitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="135" lower="-1.657222222" upper="0.523333333" velocity="8.059333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="rhippitch_to_rkneepitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 -0.27 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="rhippitch"/>
+                <child link="rkneepitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="200" lower="-0.069777778" upper="2.337555556" velocity="8.373333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="rkneepitch_to_ranklepitch" type="revolute">
+                <origin rpy="0 0 0" xyz="0 -0.26 0.0"/>
+                <axis xyz="1 0 0"/>
+                <parent link="rkneepitch"/>
+                <child link="ranklepitch"/>
+                <dynamics damping="0.0" friction="0"/>
+                <limit effort="135" lower="-1.395555556" upper="0.523333333" velocity="8.059333333"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="ranklepitch_to_rankleroll" type="revolute">
+                <origin rpy="0 0 0" xyz="0 0 0.0"/>
+                <axis xyz="0 0 1"/>
+                <parent link="ranklepitch"/>
+                <child link="rankleroll"/>
+                <dynamics damping="0.1" friction="0"/>
+                <limit effort="70" lower="-0.785" upper="0.610555556" velocity="3.14"/>
+                <safety_controller k_position="100" k_velocity="100" soft_lower_limit="-10.5236" soft_upper_limit="10.5236"/>
+        </joint>
+        <joint name="rankleroll_to_r6axis" type="fixed">
+                <parent link="rankleroll"/>
+                <child link="r6axis"/>
+                <origin rpy="0 0 0" xyz="0 -0.1025 0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+        </joint>
+        <joint name="r6axis_to_rfoot" type="fixed">
+                <parent link="r6axis"/>
+                <child link="rfoot"/>
+                <origin rpy="0 0 0" xyz="0 0.0 0.0"/>
+                <dynamics damping="0.0" friction="0.0"/>
+        </joint> 
+
+</robot>
